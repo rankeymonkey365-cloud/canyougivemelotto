@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로또 번호 추천</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-gradient-start: #1e3c72;
+    --bg-gradient-end: #2a5298;
+    --card-bg: #ffffff;
+    --title-color: #1e3c72;
+    --subtitle-color: #666666;
+    --set-row-bg: #f4f6fb;
+    --shadow-color: rgba(0, 0, 0, 0.25);
+    --button-bg: #1e3c72;
+    --button-bg-hover: #2a5298;
+    --plus-color: #999999;
+  }
+
+  [data-theme="dark"] {
+    --bg-gradient-start: #0f1b30;
+    --bg-gradient-end: #1a2b4a;
+    --card-bg: #1e2532;
+    --title-color: #8fb4ff;
+    --subtitle-color: #a0a8b8;
+    --set-row-bg: #2a3346;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --button-bg: #3a5a9a;
+    --button-bg-hover: #4a6fb8;
+    --plus-color: #b0b8c8;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    font-family: "Segoe UI", "맑은 고딕", sans-serif;
+    transition: background 0.3s;
+  }
+
+  .card {
+    position: relative;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    box-shadow: 0 20px 40px var(--shadow-color);
+    transition: background 0.3s;
+  }
+
+  .theme-toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--set-row-bg);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.3s, transform 0.1s;
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.08);
+  }
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    color: var(--title-color);
+    transition: color 0.3s;
+  }
+
+  p.subtitle {
+    margin: 0 0 24px;
+    color: var(--subtitle-color);
+    font-size: 14px;
+    transition: color 0.3s;
+  }
+
+  .sets {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .set-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--set-row-bg);
+    border-radius: 12px;
+    padding: 10px 14px;
+    transition: background 0.3s;
+  }
+
+  .set-label {
+    flex: 0 0 32px;
+    font-weight: bold;
+    color: var(--title-color);
+    font-size: 14px;
+    transition: color 0.3s;
+  }
+
+  .balls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .plus {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--plus-color);
+    margin: 0 2px;
+    transition: color 0.3s;
+  }
+
+  .ball {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.2);
+    animation: pop 0.35s ease;
+  }
+
+  @keyframes pop {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* 로또 공식 번호대 색상 */
+  .ball.yellow { background: #fbc400; }
+  .ball.blue   { background: #69c8f2; }
+  .ball.red    { background: #ff7272; }
+  .ball.gray   { background: #aaaaaa; }
+  .ball.green  { background: #b0d840; }
+
+  #generateBtn {
+    border: none;
+    background: var(--button-bg);
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 14px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  #generateBtn:hover {
+    background: var(--button-bg-hover);
+  }
+
+  #generateBtn:active {
+    transform: scale(0.97);
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <button class="theme-toggle" id="themeToggle" aria-label="다크모드 전환">🌙</button>
+    <h1>🍀 로또 번호 추천</h1>
+    <p class="subtitle">버튼을 누르면 무작위 번호 6개씩 5세트를 뽑아드려요</p>
+
+    <div class="sets" id="sets"></div>
+
+    <button id="generateBtn">번호 뽑기</button>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById("themeToggle");
+
+    function applyTheme(theme) {
+      root.setAttribute("data-theme", theme);
+      themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+      localStorage.setItem("theme", theme);
+    }
+
+    const savedTheme = localStorage.getItem("theme")
+      || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    applyTheme(savedTheme);
+
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      applyTheme(nextTheme);
+    });
+
+    function getBallColorClass(number) {
+      if (number <= 10) return "yellow";
+      if (number <= 20) return "blue";
+      if (number <= 30) return "red";
+      if (number <= 40) return "gray";
+      return "green";
+    }
+
+    function generateLottoNumbers() {
+      const numbers = new Set();
+      while (numbers.size < 6) {
+        numbers.add(Math.floor(Math.random() * 45) + 1);
+      }
+
+      let bonus;
+      do {
+        bonus = Math.floor(Math.random() * 45) + 1;
+      } while (numbers.has(bonus));
+
+      return {
+        numbers: Array.from(numbers).sort((a, b) => a - b),
+        bonus,
+      };
+    }
+
+    function renderSets(sets) {
+      const container = document.getElementById("sets");
+      container.innerHTML = "";
+      sets.forEach(({ numbers, bonus }, index) => {
+        const row = document.createElement("div");
+        row.className = "set-row";
+
+        const label = document.createElement("div");
+        label.className = "set-label";
+        label.textContent = `${index + 1}세트`;
+        row.appendChild(label);
+
+        const balls = document.createElement("div");
+        balls.className = "balls";
+        numbers.forEach((num) => {
+          const ball = document.createElement("div");
+          ball.className = `ball ${getBallColorClass(num)}`;
+          ball.textContent = num;
+          balls.appendChild(ball);
+        });
+
+        const plus = document.createElement("div");
+        plus.className = "plus";
+        plus.textContent = "+";
+        balls.appendChild(plus);
+
+        const bonusBall = document.createElement("div");
+        bonusBall.className = `ball ${getBallColorClass(bonus)}`;
+        bonusBall.textContent = bonus;
+        balls.appendChild(bonusBall);
+
+        row.appendChild(balls);
+        container.appendChild(row);
+      });
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      const sets = Array.from({ length: 5 }, () => generateLottoNumbers());
+      renderSets(sets);
+    });
+  </script>
+
+</body>
+</html>
