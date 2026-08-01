@@ -39,8 +39,11 @@
     margin: 0;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
     background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
     font-family: "Segoe UI", "맑은 고딕", sans-serif;
     transition: background 0.3s;
@@ -185,6 +188,97 @@
   #generateBtn:active {
     transform: scale(0.97);
   }
+
+  .contact-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 40px var(--shadow-color);
+    transition: background 0.3s;
+  }
+
+  .contact-card h2 {
+    margin: 0 0 6px;
+    font-size: 19px;
+    color: var(--title-color);
+    transition: color 0.3s;
+  }
+
+  .contact-card p.subtitle {
+    margin-bottom: 20px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .contact-form label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--title-color);
+    margin-bottom: -6px;
+    transition: color 0.3s;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d5d9e2;
+    background: var(--set-row-bg);
+    color: inherit;
+    resize: vertical;
+    transition: background 0.3s, border-color 0.2s;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--button-bg);
+  }
+
+  #contactSubmitBtn {
+    border: none;
+    background: var(--button-bg);
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  #contactSubmitBtn:hover {
+    background: var(--button-bg-hover);
+  }
+
+  #contactSubmitBtn:active {
+    transform: scale(0.97);
+  }
+
+  .contact-status {
+    font-size: 13px;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .contact-status.success {
+    display: block;
+    color: #2e8b57;
+  }
+
+  .contact-status.error {
+    display: block;
+    color: #e05555;
+  }
 </style>
 </head>
 <body>
@@ -197,6 +291,25 @@
     <div class="sets" id="sets"></div>
 
     <button id="generateBtn">번호 뽑기</button>
+  </div>
+
+  <div class="contact-card">
+    <h2>🤝 제휴 문의</h2>
+    <p class="subtitle">제휴 관련 문의사항을 남겨주시면 빠르게 답변드릴게요</p>
+
+    <form class="contact-form" id="contactForm" action="https://formspree.io/f/mgogqgzd" method="POST">
+      <label for="name">이름</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">이메일</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="message">문의 내용</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+
+      <button type="submit" id="contactSubmitBtn">문의 보내기</button>
+      <p class="contact-status" id="contactStatus"></p>
+    </form>
   </div>
 
   <script>
@@ -282,6 +395,39 @@
     document.getElementById("generateBtn").addEventListener("click", () => {
       const sets = Array.from({ length: 5 }, () => generateLottoNumbers());
       renderSets(sets);
+    });
+
+    const contactForm = document.getElementById("contactForm");
+    const contactStatus = document.getElementById("contactStatus");
+    const contactSubmitBtn = document.getElementById("contactSubmitBtn");
+
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      contactSubmitBtn.disabled = true;
+      contactStatus.className = "contact-status";
+      contactStatus.textContent = "";
+
+      try {
+        const response = await fetch(contactForm.action, {
+          method: "POST",
+          body: new FormData(contactForm),
+          headers: { Accept: "application/json" },
+        });
+
+        if (response.ok) {
+          contactStatus.textContent = "문의가 정상적으로 접수되었습니다. 감사합니다!";
+          contactStatus.className = "contact-status success";
+          contactForm.reset();
+        } else {
+          contactStatus.textContent = "전송에 실패했습니다. 잠시 후 다시 시도해주세요.";
+          contactStatus.className = "contact-status error";
+        }
+      } catch (err) {
+        contactStatus.textContent = "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        contactStatus.className = "contact-status error";
+      } finally {
+        contactSubmitBtn.disabled = false;
+      }
     });
   </script>
 
