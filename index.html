@@ -3,303 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="번호 6개와 보너스 번호를 무작위로 5세트 추천해주는 로또 6/45 번호 생성기입니다. 로또 6/45 게임 규칙 설명과 참고용 번호 추천을 제공하며, 실제 당첨을 보장하지 않는 오락용 서비스입니다.">
 <meta name="google-adsense-account" content="ca-pub-2861246134536272">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2861246134536272"
      crossorigin="anonymous"></script>
-<title>로또 번호 추천</title>
-<style>
-  * {
-    box-sizing: border-box;
-  }
-
-  :root {
-    --bg-gradient-start: #1e3c72;
-    --bg-gradient-end: #2a5298;
-    --card-bg: #ffffff;
-    --title-color: #1e3c72;
-    --subtitle-color: #666666;
-    --set-row-bg: #f4f6fb;
-    --shadow-color: rgba(0, 0, 0, 0.25);
-    --button-bg: #1e3c72;
-    --button-bg-hover: #2a5298;
-    --plus-color: #999999;
-  }
-
-  [data-theme="dark"] {
-    --bg-gradient-start: #0f1b30;
-    --bg-gradient-end: #1a2b4a;
-    --card-bg: #1e2532;
-    --title-color: #8fb4ff;
-    --subtitle-color: #a0a8b8;
-    --set-row-bg: #2a3346;
-    --shadow-color: rgba(0, 0, 0, 0.5);
-    --button-bg: #3a5a9a;
-    --button-bg-hover: #4a6fb8;
-    --plus-color: #b0b8c8;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px 0;
-    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-    font-family: "Segoe UI", "맑은 고딕", sans-serif;
-    transition: background 0.3s;
-  }
-
-  .card {
-    position: relative;
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 40px 32px;
-    width: 100%;
-    max-width: 520px;
-    text-align: center;
-    box-shadow: 0 20px 40px var(--shadow-color);
-    transition: background 0.3s;
-  }
-
-  .theme-toggle {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: var(--set-row-bg);
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: background 0.3s, transform 0.1s;
-  }
-
-  .theme-toggle:hover {
-    transform: scale(1.08);
-  }
-
-  h1 {
-    margin: 0 0 8px;
-    font-size: 24px;
-    color: var(--title-color);
-    transition: color 0.3s;
-  }
-
-  p.subtitle {
-    margin: 0 0 24px;
-    color: var(--subtitle-color);
-    font-size: 14px;
-    transition: color 0.3s;
-  }
-
-  .sets {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-
-  .set-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--set-row-bg);
-    border-radius: 12px;
-    padding: 10px 14px;
-    transition: background 0.3s;
-  }
-
-  .set-label {
-    flex: 0 0 32px;
-    font-weight: bold;
-    color: var(--title-color);
-    font-size: 14px;
-    transition: color 0.3s;
-  }
-
-  .balls {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .plus {
-    font-weight: bold;
-    font-size: 16px;
-    color: var(--plus-color);
-    margin: 0 2px;
-    transition: color 0.3s;
-  }
-
-  .ball {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: bold;
-    font-size: 15px;
-    box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.2);
-    animation: pop 0.35s ease;
-  }
-
-  @keyframes pop {
-    from {
-      transform: scale(0);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  /* 로또 공식 번호대 색상 */
-  .ball.yellow { background: #fbc400; }
-  .ball.blue   { background: #69c8f2; }
-  .ball.red    { background: #ff7272; }
-  .ball.gray   { background: #aaaaaa; }
-  .ball.green  { background: #b0d840; }
-
-  #generateBtn {
-    border: none;
-    background: var(--button-bg);
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 14px 28px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  #generateBtn:hover {
-    background: var(--button-bg-hover);
-  }
-
-  #generateBtn:active {
-    transform: scale(0.97);
-  }
-
-  .contact-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 32px;
-    width: 100%;
-    max-width: 520px;
-    box-shadow: 0 20px 40px var(--shadow-color);
-    transition: background 0.3s;
-  }
-
-  .contact-card h2 {
-    margin: 0 0 6px;
-    font-size: 19px;
-    color: var(--title-color);
-    transition: color 0.3s;
-  }
-
-  .contact-card p.subtitle {
-    margin-bottom: 20px;
-  }
-
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    text-align: left;
-  }
-
-  .contact-form label {
-    font-size: 13px;
-    font-weight: bold;
-    color: var(--title-color);
-    margin-bottom: -6px;
-    transition: color 0.3s;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    font-family: inherit;
-    font-size: 14px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #d5d9e2;
-    background: var(--set-row-bg);
-    color: inherit;
-    resize: vertical;
-    transition: background 0.3s, border-color 0.2s;
-  }
-
-  .contact-form input:focus,
-  .contact-form textarea:focus {
-    outline: none;
-    border-color: var(--button-bg);
-  }
-
-  #contactSubmitBtn {
-    border: none;
-    background: var(--button-bg);
-    color: #fff;
-    font-size: 15px;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  #contactSubmitBtn:hover {
-    background: var(--button-bg-hover);
-  }
-
-  #contactSubmitBtn:active {
-    transform: scale(0.97);
-  }
-
-  .contact-status {
-    font-size: 13px;
-    margin-top: 4px;
-    display: none;
-  }
-
-  .contact-status.success {
-    display: block;
-    color: #2e8b57;
-  }
-
-  .contact-status.error {
-    display: block;
-    color: #e05555;
-  }
-
-  .comments-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 32px;
-    width: 100%;
-    max-width: 520px;
-    box-shadow: 0 20px 40px var(--shadow-color);
-    transition: background 0.3s;
-  }
-
-  .comments-card h2 {
-    margin: 0 0 16px;
-    font-size: 19px;
-    color: var(--title-color);
-    transition: color 0.3s;
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+<title>로또 번호 추천 | 로또 6/45 번호 생성기</title>
 </head>
 <body>
 
@@ -311,6 +21,35 @@
     <div class="sets" id="sets"></div>
 
     <button id="generateBtn">번호 뽑기</button>
+  </div>
+
+  <div class="info-card">
+    <h2>📖 로또 6/45란?</h2>
+    <p>
+      로또 6/45는 동행복권에서 매주 토요일 추첨하는 대한민국의 대표적인 복권 게임입니다.
+      1부터 45까지의 숫자 중 6개를 선택해 구매하고, 추첨을 통해 뽑힌 6개의 당첨 번호와
+      1개의 보너스 번호를 맞힌 개수에 따라 1등부터 5등까지 등수가 나뉩니다.
+    </p>
+
+    <h3>번호 색상 구분</h3>
+    <p>
+      공식 로또 용지와 동일하게 1~10은 노란색, 11~20은 파란색, 21~30은 빨간색,
+      31~40은 회색, 41~45는 초록색으로 표시됩니다.
+    </p>
+
+    <h3>이 도구는 어떻게 번호를 뽑나요?</h3>
+    <p>
+      브라우저의 난수 생성 기능을 이용해 1~45 사이의 숫자 중 중복 없이 6개를 무작위로 선택하고,
+      나머지 숫자 중에서 보너스 번호 1개를 추가로 뽑습니다. 통계나 특정 알고리즘에 기반한
+      예측이 아니라, 순수하게 무작위로 조합을 생성해 참고용으로 보여드리는 방식입니다.
+    </p>
+
+    <div class="disclaimer">
+      ⚠️ 본 서비스는 오락 및 참고 목적으로 제공되는 무료 번호 생성기이며, 동행복권과는
+      관련이 없는 개인 제작 사이트입니다. 생성된 번호는 실제 당첨을 보장하지 않으며,
+      로또 구매는 반드시 만 19세 이상 성인이 동행복권 공식 판매처 또는 공식 홈페이지를
+      통해 진행하시기 바랍니다. 과도한 복권 구매는 경제적 손실로 이어질 수 있으니 유의하세요.
+    </div>
   </div>
 
   <div class="contact-card">
@@ -355,25 +94,16 @@
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   </div>
 
+  <footer class="site-footer">
+    <nav>
+      <a href="about.html">사이트 소개</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="#contactForm">제휴 문의</a>
+    </nav>
+    <small>&copy; 2026 로또 번호 추천. All rights reserved.</small>
+  </footer>
+
   <script>
-    const root = document.documentElement;
-    const themeToggle = document.getElementById("themeToggle");
-
-    function applyTheme(theme) {
-      root.setAttribute("data-theme", theme);
-      themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
-      localStorage.setItem("theme", theme);
-    }
-
-    const savedTheme = localStorage.getItem("theme")
-      || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    applyTheme(savedTheme);
-
-    themeToggle.addEventListener("click", () => {
-      const nextTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      applyTheme(nextTheme);
-    });
-
     function getBallColorClass(number) {
       if (number <= 10) return "yellow";
       if (number <= 20) return "blue";

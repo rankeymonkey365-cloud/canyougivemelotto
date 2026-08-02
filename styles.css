@@ -1,0 +1,373 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-gradient-start: #1e3c72;
+  --bg-gradient-end: #2a5298;
+  --card-bg: #ffffff;
+  --title-color: #1e3c72;
+  --subtitle-color: #666666;
+  --text-color: #333333;
+  --set-row-bg: #f4f6fb;
+  --shadow-color: rgba(0, 0, 0, 0.25);
+  --button-bg: #1e3c72;
+  --button-bg-hover: #2a5298;
+  --plus-color: #999999;
+  --link-color: #1e3c72;
+  --border-color: #e2e6ee;
+}
+
+[data-theme="dark"] {
+  --bg-gradient-start: #0f1b30;
+  --bg-gradient-end: #1a2b4a;
+  --card-bg: #1e2532;
+  --title-color: #8fb4ff;
+  --subtitle-color: #a0a8b8;
+  --text-color: #d5d9e2;
+  --set-row-bg: #2a3346;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --button-bg: #3a5a9a;
+  --button-bg-hover: #4a6fb8;
+  --plus-color: #b0b8c8;
+  --link-color: #8fb4ff;
+  --border-color: #33405a;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 0;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  font-family: "Segoe UI", "맑은 고딕", sans-serif;
+  transition: background 0.3s;
+}
+
+.card {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 20px 40px var(--shadow-color);
+  transition: background 0.3s;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--set-row-bg);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.3s, transform 0.1s;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.08);
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: var(--title-color);
+  transition: color 0.3s;
+}
+
+p.subtitle {
+  margin: 0 0 24px;
+  color: var(--subtitle-color);
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.sets {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--set-row-bg);
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: background 0.3s;
+}
+
+.set-label {
+  flex: 0 0 32px;
+  font-weight: bold;
+  color: var(--title-color);
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.balls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.plus {
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--plus-color);
+  margin: 0 2px;
+  transition: color 0.3s;
+}
+
+.ball {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.2);
+  animation: pop 0.35s ease;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 로또 공식 번호대 색상 */
+.ball.yellow { background: #fbc400; }
+.ball.blue   { background: #69c8f2; }
+.ball.red    { background: #ff7272; }
+.ball.gray   { background: #aaaaaa; }
+.ball.green  { background: #b0d840; }
+
+#generateBtn {
+  border: none;
+  background: var(--button-bg);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 14px 28px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#generateBtn:hover {
+  background: var(--button-bg-hover);
+}
+
+#generateBtn:active {
+  transform: scale(0.97);
+}
+
+.info-card,
+.contact-card,
+.comments-card,
+.content-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 20px 40px var(--shadow-color);
+  transition: background 0.3s;
+}
+
+.info-card h2,
+.contact-card h2,
+.comments-card h2,
+.content-card h2 {
+  margin: 0 0 6px;
+  font-size: 19px;
+  color: var(--title-color);
+  transition: color 0.3s;
+}
+
+.contact-card p.subtitle {
+  margin-bottom: 20px;
+}
+
+.info-card p,
+.content-card p,
+.content-card li {
+  color: var(--text-color);
+  font-size: 14px;
+  line-height: 1.7;
+  transition: color 0.3s;
+}
+
+.info-card h3,
+.content-card h3 {
+  font-size: 15px;
+  color: var(--title-color);
+  margin: 18px 0 6px;
+  transition: color 0.3s;
+}
+
+.info-card h3:first-of-type,
+.content-card h3:first-of-type {
+  margin-top: 0;
+}
+
+.content-card ul,
+.content-card ol {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.disclaimer {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--set-row-bg);
+  font-size: 13px;
+  color: var(--subtitle-color);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.contact-form label {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--title-color);
+  margin-bottom: -6px;
+  transition: color 0.3s;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d5d9e2;
+  background: var(--set-row-bg);
+  color: inherit;
+  resize: vertical;
+  transition: background 0.3s, border-color 0.2s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--button-bg);
+}
+
+#contactSubmitBtn {
+  border: none;
+  background: var(--button-bg);
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#contactSubmitBtn:hover {
+  background: var(--button-bg-hover);
+}
+
+#contactSubmitBtn:active {
+  transform: scale(0.97);
+}
+
+.contact-status {
+  font-size: 13px;
+  margin-top: 4px;
+  display: none;
+}
+
+.contact-status.success {
+  display: block;
+  color: #2e8b57;
+}
+
+.contact-status.error {
+  display: block;
+  color: #e05555;
+}
+
+.comments-card h2 {
+  margin-bottom: 16px;
+}
+
+.site-footer {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  padding: 4px 0 20px;
+}
+
+.site-footer nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.site-footer a {
+  color: #ffffff;
+  font-size: 13px;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.site-footer small {
+  color: #ffffff;
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.content-card a {
+  color: var(--link-color);
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--link-color);
+}
